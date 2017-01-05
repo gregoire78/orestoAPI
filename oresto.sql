@@ -5,6 +5,9 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+CREATE DATABASE `oresto` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `oresto`;
+
 CREATE TABLE `restaurants` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -33,4 +36,4 @@ INSERT INTO `test` (`id`, `text`) VALUES
 (1,	'greg'),
 (2,	'greg');
 
--- 2017-01-05 21:07:08
+-- 2017-01-05 21:09:51
