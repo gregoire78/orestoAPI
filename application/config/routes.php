@@ -52,6 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'Welcome';
 $route['test'] = 'Test';
 $route['restaurant'] = 'Restaurant';
+$route['restaurant/insert']['POST'] = 'Restaurant/insert_restaurant';
 
 $route['404_override'] = 'Welcome';
 $route['translate_uri_dashes'] = FALSE;

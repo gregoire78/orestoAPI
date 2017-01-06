@@ -3,8 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Restaurant extends MY_Controller {
 
-    protected $config;
-
     function __construct(){
         parent::__construct();
         $this->load->model('restaurant_model', 'restaurants');
@@ -31,4 +29,9 @@ class Restaurant extends MY_Controller {
         }
         $this->getJson($data);
 	}
+
+	public function insert_restaurant(){
+
+        $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
+    }
 }
