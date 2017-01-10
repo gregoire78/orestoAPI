@@ -23,7 +23,7 @@ class Restaurant_model extends CI_Model {
     }
 
     public function get($id){
-        $query = $this->db->get_where('mytable', array('id' => $id));
+        $query = $this->db->get_where('restaurants', array('id' => $id));
         return $query->result();
     }
 
