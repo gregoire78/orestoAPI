@@ -39,7 +39,7 @@ class Restaurant extends MY_Controller {
         $data["restaurant"] = [];
         $restaurant = $this->restaurants->get($id);
         var_dump($restaurant);
-        array_push($data["restaurant"],[
+        /*array_push($data["restaurant"],[
             "id" => $restaurant->id,
             "name" => $restaurant->name,
             "location" => [
@@ -53,6 +53,6 @@ class Restaurant extends MY_Controller {
             "image" => $restaurant->image,
             "dates" => $restaurant->date_register
         ]);
-        $this->getJson($data);
+        $this->getJson($data);*/
     }
 }
