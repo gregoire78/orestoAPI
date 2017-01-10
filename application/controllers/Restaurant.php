@@ -36,6 +36,6 @@ class Restaurant extends MY_Controller {
     }
 
     public function get_restaurant($id){
-        $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->get($id)))->get_output();
+        $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson(["restaurant"=>$this->restaurants->get($id)]))->get_output();
     }
 }
