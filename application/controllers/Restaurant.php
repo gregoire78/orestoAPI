@@ -34,4 +34,8 @@ class Restaurant extends MY_Controller {
 
         $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
     }
+
+    public function get_restaurant(){
+        $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->get(1)))->get_output();
+    }
 }

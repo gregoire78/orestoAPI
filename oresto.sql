@@ -20,7 +20,7 @@ CREATE TABLE `restaurants` (
   `address` varchar(255) NOT NULL,
   `description` text NOT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `date_register` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date_register` datetime,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

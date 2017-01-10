@@ -22,6 +22,11 @@ class Restaurant_model extends CI_Model {
         return $query->result();
     }
 
+    public function get($id){
+        $query = $this->db->get_where('mytable', array('id' => $id));
+        return $query->result();
+    }
+
     public function create(){
         if (empty($_POST['name']) || empty($_POST['city']) || empty($_POST['postal_code']) || empty($_POST['address']) || empty($_POST['description'])){
             return ["error"=>"il manque quelquechose"];
