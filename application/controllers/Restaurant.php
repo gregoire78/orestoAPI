@@ -38,20 +38,24 @@ class Restaurant extends MY_Controller {
     public function get_restaurant($id){
         $data["restaurant"] = [];
         $restaurant = $this->restaurants->get($id)[0];
-        array_push($data["restaurant"],[
-            "id" => $restaurant->id,
-            "name" => $restaurant->name,
-            "location" => [
-                "city" => $restaurant->city,
-                "address" => $restaurant->address,
-                "postal_code" => $restaurant->postal_code,
-                "longitude" => $restaurant->longitude,
-                "latitude" => $restaurant->latitude
-            ],
-            "description" => $restaurant->description,
-            "image" => $restaurant->image,
-            "dates" => $restaurant->date_register
-        ]);
-        $this->getJson($data);
+		if(empty($restaurant){
+			return $this->output->set_status_header(404)->set_content_type('text/plain', 'utf-8')->set_output("Not Found")->get_output();
+		} else {
+			array_push($data["restaurant"],[
+				"id" => $restaurant->id,
+				"name" => $restaurant->name,
+				"location" => [
+					"city" => $restaurant->city,
+					"address" => $restaurant->address,
+					"postal_code" => $restaurant->postal_code,
+					"longitude" => $restaurant->longitude,
+					"latitude" => $restaurant->latitude
+				],
+				"description" => $restaurant->description,
+				"image" => $restaurant->image,
+				"dates" => $restaurant->date_register
+			]);
+			$this->getJson($data);
+		}
     }
 }
