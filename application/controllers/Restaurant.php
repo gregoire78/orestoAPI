@@ -38,7 +38,7 @@ class Restaurant extends MY_Controller {
     public function get_restaurant($id){
         $data["restaurant"] = [];
         $restaurant = $this->restaurants->get($id)[0];
-		if(empty($restaurant){
+		if(empty($restaurant)){
 			return $this->output->set_status_header(404)->set_content_type('text/plain', 'utf-8')->set_output("Not Found")->get_output();
 		} else {
 			array_push($data["restaurant"],[
