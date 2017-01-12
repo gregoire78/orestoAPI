@@ -38,11 +38,10 @@ class Restaurant extends MY_Controller {
     public function get_restaurant($id){
         $data["restaurant"] = [];
         $restaurants = $this->restaurants->get($id);
-		var_dump($restaurants);
 		if(empty($restaurants)){
 			return $this->output->set_status_header(404)->set_content_type('text/plain', 'utf-8')->set_output("Not Found")->get_output();
 		} else {
-			$restaurant = $restaurants[0]
+			$restaurant = $restaurants[0];
 			array_push($data["restaurant"],[
 				"id" => $restaurant->id,
 				"name" => $restaurant->name,
