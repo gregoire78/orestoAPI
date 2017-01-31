@@ -11,10 +11,20 @@ class Restaurant_model extends CI_Model {
     private $address;
     private $description;
     private $image;
+    private $total;
+    private $numberPage;
+    private $messagesParPage;
 
     public function __construct()
     {
         parent::__construct();
+        $this->total = $this->db->count_all('restaurants');
+        $this->messagesParPage = 4;
+        $this->numberPage = ceil($this->total/$this->messagesParPage);
+    }
+
+    public function getTotalPage(){
+        return $this->numberPage;
     }
 
     public function getAll(){
@@ -24,6 +34,11 @@ class Restaurant_model extends CI_Model {
 
     public function get($id){
         $query = $this->db->get_where('restaurants', array('id' => $id));
+        return $query->result();
+    }
+
+    public function get_limit($min, $max){
+        $query = $this->db->select('*')->from('restaurants')->order_by('name')->limit($min, $max)->get();
         return $query->result();
     }
 
@@ -44,6 +59,12 @@ class Restaurant_model extends CI_Model {
             $this->db->insert('restaurants', $data);
             return ["success"=>"ajout OK"];
         }
+    }
+
+    public function getPage($page){
+        $pageActuelle=$page;
+        $premiereEntree=($pageActuelle-1)*$this->messagesParPage; // On calcul la première entrée à lire
+        return $this->get_limit($this->messagesParPage, $premiereEntree);
     }
 
 }
