@@ -16,7 +16,6 @@ class Restaurant extends MY_Controller
     {
         if (!empty($this->input->get('key', TRUE))) {
             $this->key = $this->input->get('key', TRUE);
-            var_dump($_SERVER['HTTP_HOST']);
             if (($this->auth->getKey($this->key, $_SERVER['HTTP_HOST'])) == 0) {
                 return false;
             } else {

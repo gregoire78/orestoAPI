@@ -9,6 +9,19 @@ DROP DATABASE IF EXISTS `oresto`;
 CREATE DATABASE `oresto` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `oresto`;
 
+DROP TABLE IF EXISTS `auth`;
+CREATE TABLE `auth` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `date_created` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+TRUNCATE `auth`;
+INSERT INTO `auth` (`id`, `key`, `host`, `date_created`) VALUES
+(1,	'da39a3ee5e6b4b0d3255bfef95601890afd80709',	'oresto.dev',	'2017-02-02 23:26:24');
+
 DROP TABLE IF EXISTS `restaurants`;
 CREATE TABLE `restaurants` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -24,6 +37,7 @@ CREATE TABLE `restaurants` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+TRUNCATE `restaurants`;
 INSERT INTO `restaurants` (`id`, `name`, `city`, `postal_code`, `latitude`, `longitude`, `address`, `description`, `image`, `date_register`) VALUES
 (1,	'Crêperie Canaeleee',	'maule',	78580,	NULL,	NULL,	'18 Boulevard Paul Barre',	'Le restaurant vous accueille dans un cadre chaleureux où plusieurs petites salles vous permettent de passer un agréable moment tout en dégustant la cuisine au goût du jour d\'Hervé Klein.\r\nSituées sur plusieurs niveaux, les salles peuvent accueillir jusqu\'à 15 couverts',	'galette_complete_3.jpg',	'2017-01-06 01:30:50'),
 (78,	'O\'Tacos',	'Paris',	75020,	NULL,	NULL,	'91 Rue des Vignoles',	'Le restaurant vous accueille dans un cadre chaleureux où plusieurs petites salles vous permettent de passer un agréable moment tout en dégustant la cuisine au goût du jour d\'Hervé Klein.\r\nSituées sur plusieurs niveaux, les salles peuvent accueillir jusqu\'à 15 couverts',	'otacos.jpg',	'2017-01-10 10:36:44'),
@@ -52,8 +66,9 @@ CREATE TABLE `test` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+TRUNCATE `test`;
 INSERT INTO `test` (`id`, `text`) VALUES
 (1,	'greg'),
 (2,	'greg');
 
--- 2017-01-13 21:29:17
+-- 2017-02-03 00:31:07
