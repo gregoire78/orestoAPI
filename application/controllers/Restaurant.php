@@ -92,11 +92,9 @@ class Restaurant extends MY_Controller
             // page calculation
             $pre = ($page-1) > 0 ? $page-1 : null;
             $next = ($page+1) <= ($this->restaurants->getTotalPage()) ? $page+1 : null;
-            $data['page'] = ["pre" => $pre, "next" => $next , "total" =>  $this->restaurants->getTotalPage(), "now"=>$page];
+            $data['page'] = ["pre" => $pre, "next" => $next , "total" =>  $this->restaurants->getTotalPage(), "now"=>intval($page)];
             $this->getJson($data);
         }
         return 1;
     }
-
-
 }
