@@ -41,6 +41,11 @@ class Restaurant_model extends CI_Model {
         $query = $this->db->select('*')->from('restaurants')->order_by('name')->limit($min, $max)->get();
         return $query->result();
     }
+    public function getPage($page){
+        $pageActuelle= $page;
+        $premiereEntree=($pageActuelle-1)*$this->messagesParPage; // On calcul la première entrée à lire
+        return $this->get_limit($this->messagesParPage, $premiereEntree);
+    }
 
     public function create(){
         if (empty($_POST['name']) || empty($_POST['city']) || empty($_POST['postal_code']) || empty($_POST['address']) || empty($_POST['description'])){
@@ -60,11 +65,4 @@ class Restaurant_model extends CI_Model {
             return ["success"=>"ajout OK"];
         }
     }
-
-    public function getPage($page){
-        $pageActuelle=$page;
-        $premiereEntree=($pageActuelle-1)*$this->messagesParPage; // On calcul la première entrée à lire
-        return $this->get_limit($this->messagesParPage, $premiereEntree);
-    }
-
 }

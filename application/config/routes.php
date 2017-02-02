@@ -53,8 +53,9 @@ $route['default_controller'] = 'Welcome';
 $route['test'] = 'Test';
 $route['restaurant'] = 'Restaurant';
 $route['restaurant/insert']['POST'] = 'Restaurant/insert_restaurant';
-$route['restaurant/(:any)']['GET'] = 'Restaurant/get_restaurant/$1';
-$route['restaurants/(:any)']['GET'] = 'Restaurant/get_per_page/$1';
+$route['restaurant/(:num)']['GET'] = 'Restaurant/get_restaurant/$1';
+$route['restaurants/(:num)']['GET'] = 'Restaurant/get_restaurant_page/$1';
+$route['restaurants']['GET'] = 'Restaurant/get_restaurant_page/1';
 
 $route['404_override'] = 'Welcome';
 $route['translate_uri_dashes'] = FALSE;
