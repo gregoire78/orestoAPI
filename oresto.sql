@@ -13,14 +13,13 @@ DROP TABLE IF EXISTS `auth`;
 CREATE TABLE `auth` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `key` varchar(255) NOT NULL,
-  `host` varchar(255) NOT NULL,
   `date_created` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 TRUNCATE `auth`;
-INSERT INTO `auth` (`id`, `key`, `host`, `date_created`) VALUES
-(1,	'da39a3ee5e6b4b0d3255bfef95601890afd80709',	'oresto.dev',	'2017-02-02 23:26:24');
+INSERT INTO `auth` (`id`, `key`, `date_created`) VALUES
+(1,	'da39a3ee5e6b4b0d3255bfef95601890afd80709',	'2017-02-02 23:26:24');
 
 DROP TABLE IF EXISTS `restaurants`;
 CREATE TABLE `restaurants` (
@@ -71,4 +70,4 @@ INSERT INTO `test` (`id`, `text`) VALUES
 (1,	'greg'),
 (2,	'greg');
 
--- 2017-02-03 00:31:07
+-- 2017-02-03 00:40:41
