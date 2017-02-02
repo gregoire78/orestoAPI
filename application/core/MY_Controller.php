@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class MY_Controller extends CI_Controller
 {
-    protected $config;
+    public $config;
     protected $output;
     protected $input;
 
@@ -14,6 +14,7 @@ class MY_Controller extends CI_Controller
         $this->load->database();
         $this->config = new CI_Config();
         $this->output = new CI_Output();
+        $this->input = new CI_Input();
     }
     protected function getJson($data){
         return $this->output

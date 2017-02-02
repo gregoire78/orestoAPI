@@ -3,14 +3,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Restaurant extends MY_Controller
 {
+    protected $key;
 
     function __construct()
     {
         parent::__construct();
         $this->load->model('restaurant_model', 'restaurants');
+        $this->load->model('auth_model', 'auth');
     }
 
-    private function arrayMaker($restaurant){
+    public function isAuth()
+    {
+        if (!empty($this->input->get('key', TRUE))) {
+            $this->key = $this->input->get('key', TRUE);
+            var_dump($_SERVER['HTTP_HOST']);
+            if (($this->auth->getKey($this->key, $_SERVER['HTTP_HOST'])) == 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function arrayMaker($restaurant)
+    {
         return [
             "id" => $restaurant->id,
             "name" => $restaurant->name,
@@ -33,7 +50,7 @@ class Restaurant extends MY_Controller
         foreach ($this->restaurants->getAll() as $restaurant) {
             array_push($data["restaurants"], $this->arrayMaker($restaurant));
         }
-        $this->getJson($data);
+        return $this->getJson($data);
     }
 
     public function insert_restaurant()
@@ -50,27 +67,28 @@ class Restaurant extends MY_Controller
         } else {
             $restaurant = $restaurants[0];
             array_push($data["restaurant"], $this->arrayMaker($restaurant));
-            $this->getJson($data);
+            return $this->getJson($data);
         }
-        return 1;
     }
 
     public function get_restaurant_page($page)
     {
-        $data["restaurants"] = [];
-        $restaurants = $this->restaurants->getPage($page);
-        if (empty($restaurants)) {
-            return $this->output->set_status_header(404)->set_content_type('text/plain', 'utf-8')->set_output("Not Found")->get_output();
-        } else {
-            foreach ($restaurants as $restaurant) {
-                array_push($data["restaurants"], $this->arrayMaker($restaurant));
+        if ($this->isAuth()) {
+            $data["restaurants"] = [];
+            $restaurants = $this->restaurants->getPage($page);
+            if (empty($restaurants)) {
+                return $this->output->set_status_header(404)->set_content_type('text/plain', 'utf-8')->set_output("Not Found")->get_output();
+            } else {
+                foreach ($restaurants as $restaurant) {
+                    array_push($data["restaurants"], $this->arrayMaker($restaurant));
+                }
+                // page calculation
+                $pre = ($page - 1) > 0 ? $page - 1 : null;
+                $next = ($page + 1) <= ($this->restaurants->getTotalPage()) ? $page + 1 : null;
+                $data['page'] = ["pre" => $pre, "next" => $next, "total" => $this->restaurants->getTotalPage(), "current" => intval($page)];
+                return $this->getJson($data);
             }
-            // page calculation
-            $pre = ($page-1) > 0 ? $page-1 : null;
-            $next = ($page+1) <= ($this->restaurants->getTotalPage()) ? $page+1 : null;
-            $data['page'] = ["pre" => $pre, "next" => $next , "total" =>  $this->restaurants->getTotalPage(), "now"=>intval($page)];
-            $this->getJson($data);
         }
-        return 1;
+        return $this->output->set_status_header(401)->set_content_type('text/plain', 'utf-8')->set_output("Not Auth")->get_output();
     }
 }
