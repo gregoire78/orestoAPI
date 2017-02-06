@@ -19,7 +19,7 @@ class Restaurant_model extends CI_Model {
     {
         parent::__construct();
         $this->total = $this->db->count_all('restaurants');
-        $this->messagesParPage = 4;
+        $this->messagesParPage = 5;
         $this->numberPage = ceil($this->total/$this->messagesParPage);
     }
 
