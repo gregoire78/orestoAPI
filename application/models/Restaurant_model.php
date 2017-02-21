@@ -76,28 +76,31 @@ class Restaurant_model extends CI_Model
 
     public function update($id)
     {
-        $error = "";
-        if (empty($_POST['name']) && empty($_POST['city']) && empty($_POST['postal_code']) && empty($_POST['address']) && empty($_POST['description'])) $error .= "il faud quelque chose à updater ! ";
-        if (!empty($_POST['id'])) $error .= "Ne peut pas modifier l'id ";
+        $errors = [];
+        $warnings = [];
+        $result=[];
+        $data = array_filter([
+            'name' => empty($_POST['name']) ? null : $_POST['name'],
+            'city' => empty($_POST['city']) ? null : $_POST['city'],
+            'postal_code' => empty($_POST['postal_code']) ? null : $_POST['postal_code'],
+            'latitude' => empty($_POST['latitude']) ? null : $_POST['latitude'],
+            'longitude' => empty($_POST['longitude']) ? null : $_POST['longitude'],
+            'address' => empty($_POST['address']) ? null : $_POST['address'],
+            'description' => empty($_POST['description']) ? null : $_POST['description'],
+            'image' => empty($_POST['image']) ? null : $_POST['image']
+        ]);
+        if (empty($data)) array_push($errors, "Il n'y a rien à mettre à jour !"); //pas de parametres valides
+        elseif ($data["postal_code"] && !preg_match('/^\d{5}$/', $data["postal_code"])) array_push($errors, ["postal_code"=>"le code postal doit être composé de 5 chiffres"]);
+        if (!empty(array_diff_key($_POST, $data))) array_push($warnings,"Paramètres inconnus détectés !", ["unknown_parameters" => array_diff_key($_POST, $data)]); //paramètres inconnues
 
-        if (!empty($error)) {
-            return ["error" => $error];
+        if (!empty($errors)) {
+            $result["errors"]=$errors;
         } else {
-            /*$data = [
-                'name' => $_POST['name'],
-                'city' => $_POST['city'],
-                'postal_code' => $_POST['postal_code'],
-                'latitude' => empty($_POST['latitude']) ? null : $_POST['latitude'],
-                'longitude' => empty($_POST['longitude']) ? null : $_POST['longitude'],
-                'address' => $_POST['address'],
-                'description' => $_POST['description'],
-                'image' => empty($_POST['image']) ? null : $_POST['image']
-            ];*/
-            //array_filter($entry)
             $this->db->where('id', $id);
-            $this->db->update('restaurants', $_POST);
-            return ["success" => "ajout OK"];
+            $this->db->update('restaurants', $data);
+            $result["success"] = "modifications OK";
         }
-
+        if (!empty($warnings)) $result["warnings"]=$warnings;
+        return ["results"=>$result];
     }
 }
