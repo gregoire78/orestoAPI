@@ -53,6 +53,7 @@ $route['default_controller'] = 'Welcome';
 $route['test'] = 'Test';
 $route['restaurant'] = 'Restaurant';
 $route['restaurant/insert']['POST'] = 'Restaurant/insert_restaurant';
+$route['restaurant/edit/(:any)']['POST'] = 'Restaurant/update_restaurant/$1';
 $route['restaurant/(:any)']['GET'] = 'Restaurant/get_restaurant/$1';
 $route['restaurants/(:any)']['GET'] = 'Restaurant/get_restaurant_page/$1';
 $route['restaurants']['GET'] = 'Restaurant/get_restaurant_page/1';

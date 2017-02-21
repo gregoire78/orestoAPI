@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Restaurant_model extends CI_Model {
+class Restaurant_model extends CI_Model
+{
 
     private $name;
     private $city;
@@ -20,36 +21,43 @@ class Restaurant_model extends CI_Model {
         parent::__construct();
         $this->total = $this->db->count_all('restaurants');
         $this->messagesParPage = 5;
-        $this->numberPage = ceil($this->total/$this->messagesParPage);
+        $this->numberPage = ceil($this->total / $this->messagesParPage);
     }
 
-    public function getTotalPage(){
+    public function getTotalPage()
+    {
         return $this->numberPage;
     }
 
-    public function getAll(){
+    public function getAll()
+    {
         $query = $this->db->get('restaurants');
         return $query->result();
     }
 
-    public function get($id){
+    public function get($id)
+    {
         $query = $this->db->get_where('restaurants', array('id' => $id));
         return $query->result();
     }
 
-    public function get_limit($min, $max){
+    public function get_limit($min, $max)
+    {
         $query = $this->db->select('*')->from('restaurants')->order_by('name')->limit($min, $max)->get();
         return $query->result();
     }
-    public function getPage($page){
-        $pageActuelle= $page;
-        $premiereEntree=($pageActuelle-1)*$this->messagesParPage; // On calcul la première entrée à lire
+
+    public function getPage($page)
+    {
+        $pageActuelle = $page;
+        $premiereEntree = ($pageActuelle - 1) * $this->messagesParPage; // On calcul la première entrée à lire
         return $this->get_limit($this->messagesParPage, $premiereEntree);
     }
 
-    public function create(){
-        if (empty($_POST['name']) || empty($_POST['city']) || empty($_POST['postal_code']) || empty($_POST['address']) || empty($_POST['description'])){
-            return ["error"=>"il manque quelquechose"];
+    public function create()
+    {
+        if (empty($_POST['name']) || empty($_POST['city']) || empty($_POST['postal_code']) || empty($_POST['address']) || empty($_POST['description'])) {
+            return ["error" => "il manque quelque chose"];
         } else {
             $data = [
                 'name' => $_POST['name'],
@@ -62,7 +70,34 @@ class Restaurant_model extends CI_Model {
                 'image' => empty($_POST['image']) ? null : $_POST['image']
             ];
             $this->db->insert('restaurants', $data);
-            return ["success"=>"ajout OK"];
+            return ["success" => "ajout OK"];
         }
+    }
+
+    public function update($id)
+    {
+        $error = "";
+        if (empty($_POST['name']) && empty($_POST['city']) && empty($_POST['postal_code']) && empty($_POST['address']) && empty($_POST['description'])) $error .= "il faud quelque chose à updater ! ";
+        if (!empty($_POST['id'])) $error .= "Ne peut pas modifier l'id ";
+
+        if (!empty($error)) {
+            return ["error" => $error];
+        } else {
+            /*$data = [
+                'name' => $_POST['name'],
+                'city' => $_POST['city'],
+                'postal_code' => $_POST['postal_code'],
+                'latitude' => empty($_POST['latitude']) ? null : $_POST['latitude'],
+                'longitude' => empty($_POST['longitude']) ? null : $_POST['longitude'],
+                'address' => $_POST['address'],
+                'description' => $_POST['description'],
+                'image' => empty($_POST['image']) ? null : $_POST['image']
+            ];*/
+            //array_filter($entry)
+            $this->db->where('id', $id);
+            $this->db->update('restaurants', $_POST);
+            return ["success" => "ajout OK"];
+        }
+
     }
 }

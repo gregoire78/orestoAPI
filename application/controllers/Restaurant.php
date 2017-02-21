@@ -57,6 +57,11 @@ class Restaurant extends MY_Controller
         $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
     }
 
+    public function update_restaurant($id)
+    {
+        $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->update($id)))->get_output();
+    }
+
     public function get_restaurant($id)
     {
         $data["restaurant"] = [];
