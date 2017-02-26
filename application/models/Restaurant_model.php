@@ -81,7 +81,7 @@ class Restaurant_model extends CI_Model
             'description' => $_POST['description'] ?? null,
             'image' => $_POST['image'] ?? null
         ]);
-        if (empty($data)) array_push($errors, "Il n'y a rien à mettre à jour !"); //pas de parametres valides
+        if (empty($data)) $errors = "Il n'y a rien à mettre à jour !"; //pas de parametres valides
         elseif (isset($data["postal_code"]) && !preg_match('/^\d{5}$/', $data["postal_code"])) {
             $errors["postal_code"] = "le code postal doit être composé de 5 chiffres";
         }
