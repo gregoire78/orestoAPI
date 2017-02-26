@@ -70,7 +70,7 @@ class Restaurant_model extends CI_Model
     {
         $errors = [];
         $warnings = [];
-        $result=[];
+        $result = [];
         $data = array_filter([
             'name' => $_POST['name'] ?? null,
             'city' => $_POST['city'] ?? null,
@@ -81,15 +81,18 @@ class Restaurant_model extends CI_Model
             'description' => $_POST['description'] ?? null,
             'image' => $_POST['image'] ?? null
         ]);
+
+        // verifications
         if (empty($data)) $errors = "Il n'y a rien à mettre à jour !"; //pas de parametres valides
         elseif (isset($data["postal_code"]) && !preg_match('/^\d{5}$/', $data["postal_code"])) {
             $errors["postal_code"] = "le code postal doit être composé de 5 chiffres";
         }
         if (!empty(array_diff_key($_POST, $data))) {
-            $warnings["unknown_parameters"] = array_diff_key($_POST, $data);
             $warnings["message"] = "Paramètres inconnus détectés !";
+            $warnings["unknown_parameters"] = array_diff_key($_POST, $data);
         }
 
+        // retour
         if (!empty($errors)) {
             $result["errors"]=$errors;
         } else {
