@@ -84,8 +84,13 @@ class Restaurant_model extends CI_Model
 
         // verifications
         if (empty($data)) $errors = "Il n'y a rien à mettre à jour !"; //pas de parametres valides
-        elseif (isset($data["postal_code"]) && !preg_match('/^\d{5}$/', $data["postal_code"])) {
-            $errors["postal_code"] = "le code postal doit être composé de 5 chiffres";
+        else {
+            if (isset($data["postal_code"]) && !preg_match('/^\d{5}$/', $data["postal_code"])) {
+                $errors["postal_code"] = "le code postal doit être composé de 5 chiffres";
+            }
+            if (!(isset($data["latitude"]) && isset($data["longitude"]))) {
+                $errors["lat_long"] = "la latitude et la longitude doivent être remplis";
+            }
         }
         if (!empty(array_diff_key($_POST, $data))) {
             $warnings["message"] = "Paramètres inconnus détectés !";
