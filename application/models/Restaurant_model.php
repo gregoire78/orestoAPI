@@ -99,7 +99,7 @@ class Restaurant_model extends CI_Model
 
         // retour
         if (!empty($errors)) {
-            $result["errors"]=$errors;
+            $result["errors"] = $errors;
         } else {
             $this->db->where('id', $id);
             $this->db->update('restaurants', $data);
