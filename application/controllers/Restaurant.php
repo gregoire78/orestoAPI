@@ -28,14 +28,14 @@ class Restaurant extends MY_Controller
     private function arrayMaker($restaurant)
     {
         return [
-            "id" => $restaurant->id,
+            "id" => (int)$restaurant->id,
             "name" => $restaurant->name,
             "location" => [
                 "city" => $restaurant->city,
                 "address" => $restaurant->address,
-                "postal_code" => $restaurant->postal_code,
-                "longitude" => $restaurant->longitude,
-                "latitude" => $restaurant->latitude
+                "postal_code" => is_null($restaurant->postal_code) ? $restaurant->postal_code : (int)$restaurant->postal_code,
+                "longitude" => is_null($restaurant->longitude) ? $restaurant->longitude : (int)$restaurant->longitude,
+                "latitude" => is_null($restaurant->latitude) ? $restaurant->latitude : (int)$restaurant->latitude
             ],
             "description" => $restaurant->description,
             "image" => $restaurant->image,
