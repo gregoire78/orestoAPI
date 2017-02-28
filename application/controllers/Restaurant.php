@@ -54,25 +54,32 @@ class Restaurant extends MY_Controller
 
     public function insert_restaurant()
     {
-        $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
+        if ($this->isAuth()) {
+            $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
+        } else $this->output->set_status_header(401)->set_content_type('text/plain', 'utf-8')->set_output("Not Auth")->get_output();
     }
 
     public function update_restaurant($id)
     {
-        $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->update($id)))->get_output();
+        if ($this->isAuth()) {
+            $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->update($id)))->get_output();
+        } else $this->output->set_status_header(401)->set_content_type('text/plain', 'utf-8')->set_output("Not Auth")->get_output();
     }
 
     public function get_restaurant($id)
     {
-        $data["restaurant"] = [];
-        $restaurants = $this->restaurants->get($id);
-        if (empty($restaurants)) {
-            return $this->output->set_status_header(404)->set_content_type('text/plain', 'utf-8')->set_output("Not Found")->get_output();
-        } else {
-            $restaurant = $restaurants[0];
-            array_push($data["restaurant"], $this->arrayMaker($restaurant));
-            return $this->getJson($data);
+        if ($this->isAuth()) {
+            $data["restaurant"] = [];
+            $restaurants = $this->restaurants->get($id);
+            if (empty($restaurants)) {
+                return $this->output->set_status_header(404)->set_content_type('text/plain', 'utf-8')->set_output("Not Found")->get_output();
+            } else {
+                $restaurant = $restaurants[0];
+                array_push($data["restaurant"], $this->arrayMaker($restaurant));
+                return $this->getJson($data);
+            }
         }
+        return $this->output->set_status_header(401)->set_content_type('text/plain', 'utf-8')->set_output("Not Auth")->get_output();
     }
 
     public function get_restaurant_page($page)
