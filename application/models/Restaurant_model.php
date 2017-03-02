@@ -23,7 +23,7 @@ class Restaurant_model extends CI_Model
 
     public function getAll(): array
     {
-        $query = $this->db->get('restaurants');
+        $query = $this->db->order_by('name')->get('restaurants');
         return $query->result();
     }
 
