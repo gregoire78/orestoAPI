@@ -52,6 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'Welcome';
 $route['test'] = 'Test';
 $route['restaurant'] = 'Restaurant';
+$route['restaurant-clone'] = 'Restaurant/indexClone';
 $route['restaurant/insert']['POST'] = 'Restaurant/insert_restaurant';
 $route['restaurant/edit/(:any)']['POST'] = 'Restaurant/update_restaurant/$1';
 $route['restaurant/(:any)']['GET'] = 'Restaurant/get_restaurant/$1';

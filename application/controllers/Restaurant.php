@@ -52,6 +52,15 @@ class Restaurant extends MY_Controller
         return $this->getJson($data);
     }
 
+    public function indexClone()
+    {
+        $data = [];
+        foreach ($this->restaurants->getAll() as $restaurant) {
+            array_push($data, $this->arrayMaker($restaurant));
+        }
+        return $this->getJson($data);
+    }
+
     public function insert_restaurant()
     {
         if ($this->isAuth()) {
