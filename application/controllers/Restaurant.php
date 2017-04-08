@@ -61,10 +61,45 @@ class Restaurant extends MY_Controller
         return $this->getJson($data);
     }
 
+
+    public function formatNomFichier($name_file)
+    {
+        $name_file = mb_strtolower($name_file, 'UTF-8');
+        $name_file = str_replace(
+            array('à', 'â', 'ä', 'á', 'ã', 'å', 'î', 'ï', 'ì', 'í', 'ô', 'ö', 'ò', 'ó', 'õ', 'ø', 'ù', 'û', 'ü', 'ú', 'é', 'è', 'ê', 'ë', 'ç', 'ÿ', 'ñ'),
+            array('a', 'a', 'a', 'a', 'a', 'a', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'e', 'e', 'e', 'e', 'c', 'y', 'n'),
+            $name_file
+        );
+        $name_file = preg_replace("/[^a-z0-9]/", "", $name_file);
+        return $name_file;
+    }
     public function insert_restaurant()
     {
         if ($this->isAuth()) {
-            $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
+            $config['upload_path'] = 'images/';
+            $config['allowed_types'] = 'gif|jpg|png';
+            $config['max_size'] = 1000;
+            $config['max_width'] = 10240;
+            $config['max_height'] = 7680;
+            $config['overwrite'] = true;
+            $config['file_ext_tolower'] = true;
+            $config['file_name'] = $this->formatNomFichier($_POST['name'])."-original";
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload('file')) {
+                $error = array('error' => $this->upload->display_errors('', ''));
+                $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($error))->get_output();
+            } else {
+                $config['file_name'] =  $this->formatNomFichier($_POST['name'])."-cropped";
+                $this->upload->initialize($config, false);
+                if (!$this->upload->do_upload('recfile')) {
+                    $error = array('error' => $this->upload->display_errors('', ''));
+                    $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($error))->get_output();
+                } else {
+                    $data = array('upload_data' => $this->upload->data());
+                    $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
+                }
+            }
+            //$this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
         } else $this->output->set_status_header(401)->set_content_type('text/plain', 'utf-8')->set_output("Not Auth")->get_output();
     }
 
