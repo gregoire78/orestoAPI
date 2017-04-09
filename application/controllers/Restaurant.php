@@ -69,8 +69,7 @@ class Restaurant extends MY_Controller
 
             $config['upload_path'] = 'images/';
             $config['allowed_types'] = 'gif|jpg|png';
-            $config['max_size'] = 1000;
-            $config['overwrite'] = true;
+            $config['max_size'] = 100000000;
             $config['file_ext_tolower'] = true;
             $this->load->library('upload', $config);
 
@@ -135,11 +134,12 @@ class Restaurant extends MY_Controller
                 $errors['image'] = "Une image doit être envoyé";
             }
             if (empty($errors)) {
-                $config['file_name'] = slug($data['name']) . "-original";
+                $time = round(microtime(true) * 1000);
+                $config['file_name'] = slug($data['name']) . '-' . $time . "-original";
                 $this->upload->initialize($config);
                 if ($this->upload->do_upload('recfile')) {
                     $data['image'] = $this->upload->data('file_name');
-                    $config['file_name'] = slug($data['name']) . "-cropped";
+                    $config['file_name'] = slug($data['name']) . '-' . $time . "-cropped";
                     $this->upload->initialize($config);
                     if (!$this->upload->do_upload('file')) $this->upload->display_errors('', '');
                     else $data['image'] = $this->upload->data('file_name');
