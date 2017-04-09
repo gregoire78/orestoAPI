@@ -96,7 +96,7 @@ class Restaurant extends MY_Controller
                     $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($error))->get_output();
                 } else {
                     $data = array('upload_data' => $this->upload->data());
-                    $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
+                    $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create($this->upload->data('file_name'))))->get_output();
                 }
             }
             //$this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
