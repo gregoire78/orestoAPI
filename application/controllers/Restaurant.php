@@ -85,13 +85,13 @@ class Restaurant extends MY_Controller
             $config['file_ext_tolower'] = true;
             $config['file_name'] = $this->formatNomFichier($_POST['name'])."-original";
             $this->load->library('upload', $config);
-            if (!$this->upload->do_upload('file')) {
+            if (!$this->upload->do_upload('recfile')) {
                 $error = array('error' => $this->upload->display_errors('', ''));
                 $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($error))->get_output();
             } else {
                 $config['file_name'] =  $this->formatNomFichier($_POST['name'])."-cropped";
                 $this->upload->initialize($config, false);
-                if (!$this->upload->do_upload('recfile')) {
+                if (!$this->upload->do_upload('file')) {
                     $error = array('error' => $this->upload->display_errors('', ''));
                     $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($error))->get_output();
                 } else {
