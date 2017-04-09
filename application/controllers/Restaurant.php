@@ -10,6 +10,7 @@ class Restaurant extends MY_Controller
         parent::__construct();
         $this->load->model('restaurant_model', 'restaurants');
         $this->load->model('auth_model', 'auth');
+        $this->load->helper('filename');
     }
 
     public function isAuth()
@@ -61,45 +62,102 @@ class Restaurant extends MY_Controller
         return $this->getJson($data);
     }
 
-
-    public function formatNomFichier($name_file)
-    {
-        $name_file = mb_strtolower($name_file, 'UTF-8');
-        $name_file = str_replace(
-            array('à', 'â', 'ä', 'á', 'ã', 'å', 'î', 'ï', 'ì', 'í', 'ô', 'ö', 'ò', 'ó', 'õ', 'ø', 'ù', 'û', 'ü', 'ú', 'é', 'è', 'ê', 'ë', 'ç', 'ÿ', 'ñ'),
-            array('a', 'a', 'a', 'a', 'a', 'a', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'e', 'e', 'e', 'e', 'c', 'y', 'n'),
-            $name_file
-        );
-        $name_file = preg_replace("/[^a-z0-9]/", "", $name_file);
-        return $name_file;
-    }
     public function insert_restaurant()
     {
         if ($this->isAuth()) {
+            $error_pre = "Veuillez remplir le champs: ";
+
             $config['upload_path'] = 'images/';
             $config['allowed_types'] = 'gif|jpg|png';
             $config['max_size'] = 1000;
-            $config['max_width'] = 10240;
-            $config['max_height'] = 7680;
             $config['overwrite'] = true;
             $config['file_ext_tolower'] = true;
-            $config['file_name'] = $this->formatNomFichier($_POST['name'])."-original";
             $this->load->library('upload', $config);
-            if (!$this->upload->do_upload('recfile')) {
-                $error = array('error' => $this->upload->display_errors('', ''));
-                $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($error))->get_output();
-            } else {
-                $config['file_name'] =  $this->formatNomFichier($_POST['name'])."-cropped";
-                $this->upload->initialize($config, false);
-                if (!$this->upload->do_upload('file')) {
-                    $error = array('error' => $this->upload->display_errors('', ''));
-                    $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($error))->get_output();
+
+            $errors = [];
+            $warnings = [];
+            $result = [];
+            $data = array_filter([
+                'name' => $_POST['name'] ?? null,
+                'city' => $_POST['city'] ?? null,
+                'postal_code' => $_POST['postal_code'] ?? null,
+                'latitude' => $_POST['latitude'] ?? null,
+                'longitude' => $_POST['longitude'] ?? null,
+                'address' => $_POST['address'] ?? null,
+                'description' => $_POST['description'] ?? null
+            ]);
+            $files = array_filter([
+                'recfile' => $_FILES['recfile'] ?? null,
+                'file' => $_FILES['file'] ?? null
+            ]);
+            // verifications
+            /*if (empty($data)) $errors = "Les champs doivent être remplis"; //pas de parametres valides
+            else {*/
+            // name
+            if (!isset($data['name'])) {
+                $errors["name"] = $error_pre . "name";
+            }
+            // postal_code
+            if (!isset($data["postal_code"])) {
+                $errors["postal_code"] = $error_pre . "postal_code";
+            } elseif (isset($data["postal_code"]) && !preg_match('/^\d{5}$/', $data["postal_code"])) {
+                $errors["postal_code"] = "le code postal doit être composé de 5 chiffres";
+            }
+            // city
+            if (!isset($data['city'])) {
+                $errors["city"] = $error_pre . "city";
+            }
+            //address
+            if (!isset($data['address'])) {
+                $errors["address"] = $error_pre . "address";
+            }
+            // description
+            if (!isset($data['description'])) {
+                $errors['description'] = $error_pre . "description";
+            }
+            // champs inconnus
+            if (!empty(array_diff_key($_POST, $data))) {
+                $warnings["message"]["fields"] = "Champs inconnus détectés !";
+                $warnings["unknown_fields"] = array_diff_key($_POST, $data);
+            }
+            //fichiers inconnus
+            if (!empty(array_diff_key($_FILES, $files))) {
+                $warnings["message"]["files"] = "Fichiers inconnus détectés !";
+                $res_file_name = [];
+                foreach (array_diff_key($_FILES, $files) as $k => $f) {
+                    array_key_exists('name', $f) ? $res_file_name[$k] = $f['name'] : $res_file_name[$k] = $k;
+                }
+                $warnings["unknown_files"] = $res_file_name;
+            }
+
+            // upload
+            if (!isset($files['recfile'])) {
+                $errors['image'] = "Une image doit être envoyé";
+            }
+            if (empty($errors)) {
+                $config['file_name'] = slug($data['name']) . "-original";
+                $this->upload->initialize($config);
+                if ($this->upload->do_upload('recfile')) {
+                    $data['image'] = $this->upload->data('file_name');
+                    $config['file_name'] = slug($data['name']) . "-cropped";
+                    $this->upload->initialize($config);
+                    if (!$this->upload->do_upload('file')) $this->upload->display_errors('', '');
+                    else $data['image'] = $this->upload->data('file_name');
                 } else {
-                    $data = array('upload_data' => $this->upload->data());
-                    $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create($this->upload->data('file_name'))))->get_output();
+                    $errors['recfile'] = $this->upload->display_errors('', '');
                 }
             }
-            //$this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->create()))->get_output();
+
+            // retour
+            if (!empty($errors)) {
+                $result["errors"] = $errors;
+            } else {
+                // insert here
+                if ($this->restaurants->create($data)) $result["success"] = "ajout OK";
+            }
+            if (!empty($warnings)) $result["warnings"] = $warnings;
+            $r = ["results" => $result];
+            $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($r))->get_output();
         } else $this->output->set_status_header(401)->set_content_type('text/plain', 'utf-8')->set_output("Not Auth")->get_output();
     }
 

@@ -46,24 +46,9 @@ class Restaurant_model extends CI_Model
         return $this->get_limit($this->messagesParPage, $premiereEntree);
     }
 
-    public function create(string $fileName): array
+    public function create(array $data): bool
     {
-        if (empty($_POST['name']) || empty($_POST['city']) || empty($_POST['postal_code']) || empty($_POST['address']) || empty($_POST['description'])) {
-            return ["error" => "il manque quelque chose"];
-        } else {
-            $data = [
-                'name' => $_POST['name'],
-                'city' => $_POST['city'],
-                'postal_code' => $_POST['postal_code'],
-                'latitude' => $_POST['latitude'] ?? null,
-                'longitude' => $_POST['longitude'] ?? null,
-                'address' => $_POST['address'],
-                'description' => $_POST['description'],
-                'image' => $fileName
-            ];
-            $this->db->insert('restaurants', $data);
-            return ["success" => "ajout OK"];
-        }
+        return $this->db->insert('restaurants', $data);
     }
 
     public function update(int $id): array
@@ -105,7 +90,7 @@ class Restaurant_model extends CI_Model
             $this->db->update('restaurants', $data);
             $result["success"] = "modifications OK";
         }
-        if (!empty($warnings)) $result["warnings"]=$warnings;
-        return ["results"=>$result];
+        if (!empty($warnings)) $result["warnings"] = $warnings;
+        return ["results" => $result];
     }
 }
