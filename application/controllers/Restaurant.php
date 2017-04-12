@@ -164,7 +164,9 @@ class Restaurant extends MY_Controller
     public function update_restaurant($id)
     {
         if ($this->isAuth()) {
-            $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->update($id)))->get_output();
+            if ($this->restaurants->get($id))
+                $this->output->set_status_header(200)->set_content_type('text/plain', 'utf-8')->set_output($this->getJson($this->restaurants->update($id)))->get_output();
+            else $this->output->set_status_header(404)->set_content_type('text/plain', 'utf-8')->set_output("Not Found")->get_output();
         } else $this->output->set_status_header(401)->set_content_type('text/plain', 'utf-8')->set_output("Not Auth")->get_output();
     }
 
