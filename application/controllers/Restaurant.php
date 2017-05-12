@@ -77,7 +77,7 @@ class Restaurant extends MY_Controller
             $warnings = [];
             $result = [];
             $data = array_filter([
-                'name' => $_POST['name'] ?? null,
+                'name' => mb_ucfirst($_POST['name'], "UTF-8") ?? null,
                 'city' => $_POST['city'] ?? null,
                 'postal_code' => $_POST['postal_code'] ?? null,
                 'latitude' => $_POST['latitude'] ?? null,
